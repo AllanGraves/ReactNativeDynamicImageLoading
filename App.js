@@ -27,31 +27,39 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const DATA = [
-  {
-    text: "man",
-    image: require('./assets/images/photo1.jpg')
-  },
-  {
-    text: "woman",
-    image: require('./assets/images/photo2.jpg')
-  }
-]
+const DATA = '{ "image1":  { "text": "man", "image": "./assets/images/photo1.jpg" }, "image2":  {    "text":"woman",    "image":"./assets/images/photo2.jpg"  }}';
+const parsedData = JSON.parse(DATA);
+const imgObjects = [];   
+const foo = require("./assets/images/photo1.jpg");
 
 const App: () => React$Node = () => {
   const [imageVar, setImageVar] = useState(0);
+  console.log(DATA);
+
+  
+  /*
+  const images = {};
+  require('require-context/register')
+
+  function importAll (r) {
+    r.keys().forEach(key => images[key] = r(key));
+  }
+  
+  importAll(require.context('./assets/images', true, /\.jpg$/));
+*/
 
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Image style={{height: 50, width: 50}} source={DATA[imageVar].image}/>
-        <Text> {imageVar}: {DATA[imageVar].text} </Text>
+        <Image style={{height: 50, width: 50}} source={parsedData[imageVar].image}/>
+        <Text> {imageVar}: {parsedData[imageVar].text} </Text>
         <Button onPress={()=> {
-          imageVar == (DATA.length - 1) ? setImageVar(0) : setImageVar(imageVar + 1);
-          console.log(DATA[imageVar].image);
+          imageVar == (parsedData.length - 1) ? setImageVar(0) : setImageVar(imageVar + 1);
+          console.log(parsedData[imageVar].image);
         }}
-          title="Change Pic" />
+          title="Change Pic" /> 
+          <Text>Here</Text>
       </SafeAreaView>
     </>
   );
