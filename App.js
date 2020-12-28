@@ -7,101 +7,61 @@
  */
 
 import React, {useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Image,
-  Button,
-  Alert
-} from 'react-native';
+import {SafeAreaView, Text, StatusBar, Image, Button} from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import * as FileSystem from 'expo-file-system';
 
-const DATA = '{ "image1":  { "text": "man", "image": "./assets/images/photo1.jpg" }, "image2":  {    "text":"woman",    "image":"./assets/images/photo2.jpg"  }}';
-const parsedData = JSON.parse(DATA);
-const imgObjects = [];   
-const foo = require("./assets/images/photo1.jpg");
+const foo = require('./assets/images/photo1.jpg');
+const fooURI = Image.resolveAssetSource(foo).uri;
 
+console.log('FooURI: ' + fooURI);
 const App: () => React$Node = () => {
-  const [imageVar, setImageVar] = useState(0);
-  console.log(DATA);
+  const [imageDownloaded, setImageDownloaded] = useState(0);
+  const docDir = FileSystem.documentDirectory;
+  const localFile = 'file://' + docDir + 'photo1.jpg';
+  let dlImage = <Text> Not defined </Text>;
 
-  
-  /*
-  const images = {};
-  require('require-context/register')
-
-  function importAll (r) {
-    r.keys().forEach(key => images[key] = r(key));
+  if (imageDownloaded) {
+    dlImage = (
+      <Image style={{height: 50, width: 50}} source={{uri: localFile}} />
+    );
+  } else {
+    dlImage = <Text> No Image </Text>;
   }
-  
-  importAll(require.context('./assets/images', true, /\.jpg$/));
-*/
 
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <Image style={{height: 50, width: 50}} source={parsedData[imageVar].image}/>
-        <Text> {imageVar}: {parsedData[imageVar].text} </Text>
-        <Button onPress={()=> {
-          imageVar == (parsedData.length - 1) ? setImageVar(0) : setImageVar(imageVar + 1);
-          console.log(parsedData[imageVar].image);
-        }}
-          title="Change Pic" /> 
-          <Text>Here</Text>
+        <Button
+          onPress={() => {
+            console.log('Using :' + docDir);
+            FileSystem.downloadAsync(fooURI, localFile)
+              .then(({uri}) => {
+                console.log('Finished downloading to ' + uri);
+                setImageDownloaded(1);
+                FileSystem.readDirectoryAsync('file://' + docDir)
+                  .then((dir) => {
+                    dir.forEach((val) => {
+                      console.log('File: ' + val);
+                    });
+                  })
+                  .catch(() => {
+                    console.log('Error reading directory: ' + docDir);
+                  });
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }}
+          title="click me"
+        />
+
+        <Text> DL: {imageDownloaded} </Text>
+        {dlImage}
       </SafeAreaView>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
 export default App;

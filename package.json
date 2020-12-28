@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "babel-plugin-require-context-hook": "^1.0.0",
+    "expo-constants": "^9.3.5",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "react": "16.13.1",
     "react-native": "0.63.4",
+    "react-native-unimodules": "^0.12.0",
     "require-context": "^1.1.0"
   },
   "devDependencies": {
