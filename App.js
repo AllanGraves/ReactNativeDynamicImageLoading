@@ -15,7 +15,7 @@ import {SafeAreaView, Text, StatusBar, Image, Button} from 'react-native';
  */
 import * as FileSystem from 'expo-file-system';
 
-/* This just sets up an easy way to get an asset included in our bundle.  
+/* This just sets up an easy way to get an asset included in our bundle.
  * In reality, you wouldn't use this method as well as the local 'file://' URI.
  * You might include a bundle of assets that are unpacked on the device though.
  */
@@ -26,14 +26,14 @@ const fooURI = Image.resolveAssetSource(foo).uri;
 console.log('FooURI: ' + fooURI);
 const App: () => React$Node = () => {
   /* Set up a React hook to tell when we've gotten the image downloaded.
-   * We don't want to display the image before we've downloaded it.  There's nothing to display, 
+   * We don't want to display the image before we've downloaded it.  There's nothing to display,
    * and react will throw an error.
    */
   const [imageDownloaded, setImageDownloaded] = useState(0);
   const docDir = FileSystem.documentDirectory;
   const localFile = 'file://' + docDir + 'photo1.jpg';
   /* Yeah - we should never see this, but in the tradition of programmers everywhere, when we do see
-   * it we'll know exactly where we got it from - but...   really?  Did the compiler malfunction? 
+   * it we'll know exactly where we got it from - but...   really?  Did the compiler malfunction?
    */
   let dlImage = <Text> Not defined </Text>;
 
